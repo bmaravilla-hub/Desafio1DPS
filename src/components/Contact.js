@@ -1,33 +1,101 @@
-import styled from "styled-components";
+import React from 'react';
 
-const ContactCard = styled.div`
-  border: 2px solid ${(props) => (props.favorito ? "#ff69b4" : "#ccc")};
-  padding: 10px;
-  margin: 10px;
-  border-radius: 8px;
-  background: ${(props) => (props.favorito ? "#ffe4e1" : "#f9f9f9")};
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`;
-
-const Contact = ({ contacto, toggleFavorito, eliminarContacto }) => {
+const Contact = React.memo(({ contact, onDelete, onToggleFavorite }) => {
   return (
-    <ContactCard favorito={contacto.favorito}>
-      <div>
-        <h3>
-          {contacto.nombre} {contacto.apellido}
-        </h3>
-        <p>📞 {contacto.telefono}</p>
+    <div style={styles.contactContainer}>
+      <div style={styles.contactInfo}>
+        <p style={styles.contactName}>
+          {contact.name} {contact.lastName}
+        </p>
+        <div style={styles.phoneContainer}>
+          <p style={styles.contactPhone}>
+            {contact.phone ? contact.phone : 'Sin teléfono'}
+          </p>
+        </div>
       </div>
-      <div>
-        <button onClick={() => toggleFavorito(contacto.id)}>
-          {contacto.favorito ? "★ Quitar de favoritos" : "☆ Agregar a favoritos"}
+      <div style={styles.contactActions}>
+        {/* Botón para marcar/desmarcar como favorito */}
+        <button
+          style={styles.buttonWithIcon}
+          onClick={() => onToggleFavorite(contact.id)}
+        >
+          <i
+            className={contact.isFavorite ? 'fas fa-star' : 'far fa-star'} 
+            style={{ ...styles.icon, color: contact.isFavorite ? '#FFD700' : '#000' }} 
+          ></i>
+          <span style={styles.buttonText}>
+            {contact.isFavorite ? 'Quitar de favoritos' : 'Agregar a favoritos'}
+          </span>
         </button>
-        <button onClick={() => eliminarContacto(contacto.id)}>❌ Eliminar</button>
+
+        {/* Botón para eliminar el contacto */}
+        <button
+          style={styles.buttonWithIcon}
+          onClick={() => onDelete(contact.id)}
+        >
+          <i
+            className="fas fa-trash" 
+            style={{ ...styles.icon, color: '#E91E63' }} 
+          ></i>
+          <span style={{ ...styles.buttonText, color: '#E91E63' }}>Eliminar</span>
+        </button>
       </div>
-    </ContactCard>
+    </div>
   );
+});
+
+const styles = {
+  contactContainer: {
+    backgroundColor: '#FFF',
+    padding: 16,
+    margin: '8px 0',
+    borderRadius: 8,
+    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+  },
+  contactInfo: {
+    marginBottom: 12,
+  },
+  contactName: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#000',
+    margin: 0,
+  },
+  phoneContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    marginTop: 4,
+  },
+  contactPhone: {
+    fontSize: 16,
+    color: '#000',
+    marginLeft: 8,
+    margin: 0,
+  },
+  contactActions: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+    borderTop: '1px solid #EEE',
+    paddingTop: 12,
+  },
+  buttonWithIcon: {
+    marginLeft: 16,
+    padding: 8,
+    background: 'none',
+    border: 'none',
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+  },
+  buttonText: {
+    fontSize: 14,
+    marginLeft: 8,
+    color: '#000',
+  },
+  icon: {
+    fontSize: 16, 
+  },
 };
 
 export default Contact;
+
